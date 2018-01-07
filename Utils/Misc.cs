@@ -69,6 +69,14 @@ namespace Shoko.Commons.Utils
             return lst;
         }
 
+        public static List<S> SafeGetList<T, S>(this IDictionary<T, List<S>> dict, T value)
+        {
+            return dict.ContainsKey(value) ? dict[value] : new List<S>();
+        }
+        public static Dictionary<S,R> SafeGetDictionary<T, S, R>(this IDictionary<T, Dictionary<S,R>> dict, T value)
+        {
+            return dict.ContainsKey(value) ? dict[value] : new Dictionary<S, R>();
+        }
         public static IQueryable<T> SortGroups<T>(this CL_GroupFilter gf, IQueryable<T> list) where T: CL_AnimeGroup_User
         {
             List<GroupFilterSortingCriteria> criterias = GroupFilterSortingCriteria.Create(gf.GroupFilterID, gf.SortingCriteria);

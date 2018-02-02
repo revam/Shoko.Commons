@@ -527,7 +527,7 @@ namespace Shoko.Commons.Extensions
 
         public static string GetAudioCodec(this CL_VideoDetailed videodetailed) => videodetailed.AniDB_File_AudioCodec.Length > 0 ? videodetailed.AniDB_File_AudioCodec : videodetailed.VideoInfo_AudioCodec;
 
-        public static string GetFileName(this CL_VideoDetailed videodetailed) => videodetailed.VideoLocal_FileName;
+
 
         public static string GetFullPath(this CL_VideoDetailed videodetailed) => videodetailed.Places?.FirstOrDefault(a => !a.ImportFolder.CloudID.HasValue && !String.IsNullOrEmpty(a.GetLocalFileSystemFullPath()))?.GetLocalFileSystemFullPath() ?? "";
 

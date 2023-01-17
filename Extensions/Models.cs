@@ -20,8 +20,6 @@ namespace Shoko.Commons.Extensions
         //TODO Move this to a cache Dictionary when time, memory consumption should be low but, who knows.
         private static Dictionary<int, HashSet<string>> _alltagscache = new();
         private static Dictionary<int, HashSet<string>> _alltitlescache = new();
-        private static Dictionary<int, HashSet<string>> _hidecategoriescache = new();
-        private static Dictionary<string, HashSet<string>> _plexuserscache = new();
 
 
         public static List<T> CastList<T>(this IEnumerable<dynamic> list) => list?.Cast<T>().ToList();
@@ -329,36 +327,6 @@ namespace Shoko.Commons.Extensions
         public static GroupFilterConditionType GetConditionTypeEnum(this GroupFilterCondition grpf) => (GroupFilterConditionType) grpf.ConditionType;
 
         public static GroupFilterOperator GetConditionOperatorEnum(this GroupFilterCondition grpf) => (GroupFilterOperator) grpf.ConditionOperator;
-
-        public static HashSet<string> GetHideCategories(this JMMUser user)
-        {
-            if (string.IsNullOrEmpty(user.HideCategories)) return new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-            lock (_hidecategoriescache)
-            {
-                if (!_hidecategoriescache.ContainsKey(user.JMMUserID))
-                    _hidecategoriescache[user.JMMUserID] = new HashSet<string>(
-                        user.HideCategories.Trim().Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(a => a.Trim())
-                            .Where(a => !string.IsNullOrEmpty(a)).Distinct(StringComparer.InvariantCultureIgnoreCase),
-                        StringComparer.InvariantCultureIgnoreCase);
-                return _hidecategoriescache[user.JMMUserID];
-            }
-        }
-
-        public static HashSet<string> GetPlexUsers(this JMMUser user)
-        {
-            if (string.IsNullOrEmpty(user.PlexUsers)) return new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-            lock (_plexuserscache)
-            {
-                if (!_plexuserscache.ContainsKey(user.PlexUsers))
-                    _plexuserscache[user.PlexUsers] = new HashSet<string>(
-                        user.PlexUsers.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(a => a.Trim())
-                            .Where(a => !string.IsNullOrEmpty(a)).Distinct(StringComparer.InvariantCultureIgnoreCase),
-                        StringComparer.InvariantCultureIgnoreCase);
-                return _plexuserscache[user.PlexUsers];
-            }
-        }
 
         /// <summary>
         /// looking at the episode range determine if the group has released a file
@@ -1184,14 +1152,6 @@ namespace Shoko.Commons.Extensions
                 return 2;
             return int.MaxValue;
         }
-
-
-
-        public static bool IsAdminUser(this JMMUser JMMUser) => JMMUser.IsAdmin == 1;
-
-        public static bool IsAniDBUserBool(this JMMUser JMMUser) => JMMUser.IsAniDBUser == 1;
-
-        public static bool IsTraktUserBool(this JMMUser JMMUser) => JMMUser.IsTraktUser == 1;
 
         public static bool IsFolderDropSource(this ImportFolder ImportFolder) => ImportFolder.IsDropSource == 1;
 
